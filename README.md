@@ -53,6 +53,7 @@ Now you can add the following directories:
   * **layout:** Layout to be used for rendering this post. Defaults to `default`,
     which means `layouts/default.html.twig` is rendered unless specified
     otherwise.
+  * **hidden:** Set this to true to hide a post from the index.
 
   Other fields can be defined at will and used in the template.
 
