@@ -21,7 +21,8 @@
     (let ([post (parse-post-file file)])
         (write-web-file
             (at post "path")
-            (render-layout "default.html.twig"
+            (render-layout
+                (. (at post "layout") ".html.twig")
                 (dict ("post" post)
                       ("relativeRoot" "../../..")))))
     (string file))
