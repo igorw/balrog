@@ -1,0 +1,46 @@
+(use getcwd)
+(use var-dump)
+
+(define base-dir (getcwd))
+
+(require "render")
+(require "parse")
+(require "filesystem")
+(require "posts")
+
+(define (build)
+    (clean-web)
+    (dict ("posts" (build-posts))
+          ("index" (build-index))
+          ("assets" (copy-assets))))
+
+(define (build-posts)
+    (map build-post (list-post-files)))
+
+(define (build-post file)
+    (let ([post (parse-post-file file)])
+        (write-web-file
+            (at post "path")
+            (render-layout "default.html.twig"
+                (dict ("post" post)
+                      ("relativeRoot" "../../..")))))
+    (string file))
+
+(define (build-index)
+    (let ([posts (list-posts)])
+        (map
+            (lambda (file)
+                (build-index-from-layout file posts))
+            (list-index-layout-files))))
+
+(define (build-index-from-layout file posts)
+    (define parts (get-layout-parts file))
+    (write-web-file
+        (. "index." (at parts "format"))
+        (render-layout (basename file)
+            (dict ("posts" (sort-posts (filter-hidden-posts posts)))
+                  ("relativeRoot" ".")
+                  ("latest" (get-latest-post posts)))))
+    (string file))
+
+(var-dump (build))

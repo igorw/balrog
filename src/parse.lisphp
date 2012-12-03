@@ -1,0 +1,41 @@
+(use <Symfony\Component\Yaml\Yaml>)
+(use file-get-contents)
+(use explode array-merge array-combine)
+(use explode basename sprintf <DateTime>)
+(use balrog-split-raw-post)
+
+(define (parse-post-file file)
+    (parse-post file (file-get-contents file)))
+
+(define (parse-post file contents)
+    (let ([data (balrog-split-raw-post file contents)])
+        (array-merge
+            (dict ("layout" "default"))
+            (<Symfony\Component\Yaml\Yaml>/parse (at data "front"))
+            (dict ("path" (get-post-path file))
+                  ("date_string" (get-post-date-string file))
+                  ("date" (get-post-date file))
+                  ("body" (render-post-body (at data "body")))))))
+
+(define (get-post-name-parts file)
+    (array-combine
+        (array "year" "month" "day" "slug")
+        (explode "-" (basename file ".md") 4)))
+
+(define (get-post-path file)
+    (define parts (get-post-name-parts file))
+    (sprintf "%s/%s/%s/%s.html"
+        (at parts "year")
+        (at parts "month")
+        (at parts "day")
+        (at parts "slug")))
+
+(define (get-post-date-string file)
+    (define parts (get-post-name-parts file))
+    (sprintf "%s-%s-%s"
+        (at parts "year")
+        (at parts "month")
+        (at parts "day")))
+
+(define (get-post-date file)
+    (<DateTime> (get-post-date-string file)))

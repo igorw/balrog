@@ -1,5 +1,5 @@
 {
-    "hash": "a39d7e3a308587adc04a0667c86972e8",
+    "hash": "54bb385eaa9e4a8c161f518a4830f5e7",
     "packages": [
         {
             "name": "dflydev/markdown",
@@ -18,7 +18,7 @@
             "require": {
                 "php": ">=5.3"
             },
-            "time": "2012-01-16 00:36:37",
+            "time": "2012-01-15 19:36:37",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -26,6 +26,7 @@
                     "dflydev\\markdown": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "New BSD License"
             ],
@@ -56,71 +57,77 @@
             ]
         },
         {
-            "name": "symfony/console",
-            "version": "v2.1.2",
-            "target-dir": "Symfony/Component/Console",
+            "name": "lisphp/lisphp",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Console",
-                "reference": "v2.1.0-RC2"
+                "url": "https://github.com/lisphp/lisphp",
+                "reference": "1ac44d5920542b07b4efb6412961508271fa0eb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/Console/zipball/v2.1.0-RC2",
-                "reference": "v2.1.0-RC2",
+                "url": "https://github.com/lisphp/lisphp/archive/1ac44d5920542b07b4efb6412961508271fa0eb8.zip",
+                "reference": "1ac44d5920542b07b4efb6412961508271fa0eb8",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=5.3.0"
             },
-            "time": "2012-08-22 13:48:41",
+            "time": "2012-12-03 21:08:35",
+            "bin": [
+                "bin/lisphp"
+            ],
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev"
+                    "dev-master": "1.0-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-0": {
-                    "Symfony\\Component\\Console": ""
+                    "Lisphp": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch",
+                    "homepage": "http://wiedler.ch/igor/"
                 },
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
+                    "name": "Hong Minhee",
+                    "email": "minhee@dahlia.kr"
                 }
             ],
-            "description": "Symfony Console Component",
-            "homepage": "http://symfony.com"
+            "description": "Lisphp is a Lisp dialect written in PHP.",
+            "keywords": [
+                "lisp"
+            ]
         },
         {
             "name": "symfony/filesystem",
-            "version": "v2.1.2",
+            "version": "v2.1.4",
             "target-dir": "Symfony/Component/Filesystem",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem",
-                "reference": "v2.1.0-RC2"
+                "reference": "v2.1.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/Filesystem/zipball/v2.1.0-RC2",
-                "reference": "v2.1.0-RC2",
+                "url": "https://github.com/symfony/Filesystem/archive/v2.1.4.zip",
+                "reference": "v2.1.4",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2012-08-22 13:48:41",
+            "time": "2012-11-20 13:21:32",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -133,6 +140,7 @@
                     "Symfony\\Component\\Filesystem": ""
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -151,23 +159,23 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.1.2",
+            "version": "v2.1.4",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml",
-                "reference": "v2.1.0-RC2"
+                "reference": "v2.1.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/Yaml/zipball/v2.1.0-RC2",
-                "reference": "v2.1.0-RC2",
+                "url": "https://github.com/symfony/Yaml/archive/v2.1.4.zip",
+                "reference": "v2.1.4",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2012-08-22 13:48:41",
+            "time": "2012-11-08 09:51:48",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -180,6 +188,7 @@
                     "Symfony\\Component\\Yaml": ""
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -213,7 +222,7 @@
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "2012-08-25 09:32:57",
+            "time": "2012-08-25 10:32:57",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -226,6 +235,7 @@
                     "Twig_": "lib/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3"
             ],
@@ -251,7 +261,7 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ]
+    "stability-flags": {
+        "lisphp/lisphp": 20
+    }
 }

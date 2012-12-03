@@ -1,142 +1,21 @@
 #!/usr/bin/env php
 <?php
 
-use dflydev\markdown\MarkdownParser;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Yaml\Yaml;
-
 if ((!@include __DIR__.'/../../../autoload.php') && (!@include __DIR__.'/../vendor/autoload.php')) {
     die('You must set up the project dependencies, run the following commands:'.PHP_EOL.
-        'curl -s http://getcomposer.org/installer | php'.PHP_EOL.
+        'curl -s https://getcomposer.org/installer | php'.PHP_EOL.
         'php composer.phar install'.PHP_EOL);
 }
 
-function parsePost($filename, $contents)
-{
-    preg_match('#---\n(.+)---\n(.+)#s', $contents, $matches);
-    if (!$matches) {
-        throw new \RuntimeException(sprintf('Could not parse front matter in blog post %s', basename($filename)));
-    }
+$filename = __DIR__.'/../src/balrog.lisphp';
 
-    list($_, $rawInfo, $rawBody) = $matches;
+$environment = Lisphp_Environment::full();
+$scope = new Lisphp_Scope($environment);
 
-    $info = Yaml::parse($rawInfo);
-    $layout = isset($info['layout']) ? $info['layout'] : 'default';
+$scope['require'] = new Lisphp_Runtime_PHPFunction(function ($file) use ($scope) {
+    $program = Lisphp_Program::load(__DIR__.'/../src/'.$file.'.lisphp');
+    return $program->execute($scope);
+});
 
-    $markdownParser = new MarkdownParser();
-    $body = $markdownParser->transformMarkdown($rawBody);
-    $body = str_replace('$relativeRoot', '../../..', $body);
-
-    list($year, $month, $day, $slug) = explode('-', basename($filename, '.md'), 4);
-
-    $date = "$year-$month-$day";
-    $path = "$year/$month/$day/$slug.html";
-
-    $post = array_merge($info, array(
-        'url'           => $path, // deprecated
-        'path'          => $path,
-        'date_string'   => $date,
-        'date'          => new DateTime($date),
-        'body'          => $body,
-    ));
-
-    return $post;
-}
-
-$console = new Application();
-$console
-    ->register('build')
-    ->setDescription('Builds static html files from markdown source')
-    ->setCode(function (InputInterface $input, OutputInterface $output) {
-        $baseDir = getcwd();
-
-        $fs = new Filesystem();
-        $fs->remove($baseDir.'/web');
-
-        $loader = new Twig_Loader_Filesystem($baseDir.'/layouts');
-        $twig = new Twig_Environment($loader, array('strict_variables' => true));
-
-        $getEngine = function ($name) use ($twig) {
-            $engines = array(
-                'twig'  => function ($filename, $vars) use ($twig) {
-                    return $twig->render($filename, $vars);
-                },
-                'php'   => function ($filename, $vars) {
-                    extract($vars);
-                    return include $baseDir.'/layouts'.$filename;
-                },
-            );
-
-            return $engines[$name];
-        };
-
-        $renderLayout = function ($filename, $vars) use ($getEngine) {
-            list($layout, $format, $engineName) = explode('.', $filename);
-
-            $engine = $getEngine($engineName);
-
-            return $engine($filename, $vars);
-        };
-
-        $posts = array();
-
-        $files = new \FilesystemIterator($baseDir.'/posts');
-        foreach ($files as $file) {
-            if ($input->getOption('verbose')) {
-                $output->writeln(sprintf('Processing <info>%s</info>', $file->getBasename()));
-            }
-
-            $contents = file_get_contents($file);
-            $post = parsePost((string) $file, $contents);
-
-            $posts[] = $post;
-
-            $vars = array('post' => $post, 'relativeRoot' => '../../..');
-            $rendered = $renderLayout($post['layout'].'.html.twig', $vars);
-
-            $target = $baseDir.'/web/'.$post['path'];
-            $fs->mkdir(dirname($target));
-            file_put_contents($target, $rendered);
-        }
-
-        if ($input->getOption('verbose')) {
-            $output->writeln('Building index');
-        }
-
-        usort($posts, function ($a, $b) {
-            return strcmp($a['date_string'], $b['date_string']);
-        });
-        $posts = array_reverse($posts);
-
-        $latest = reset($posts);
-
-        foreach (glob($baseDir.'/layouts/index.*.twig') as $file) {
-            $file = basename($file);
-
-            preg_match('#index\.(.+?)\.twig$#', $file, $match);
-            $format = $match[1];
-
-            $vars = array('posts' => $posts, 'relativeRoot' => '.', 'latest' => $latest);
-            $rendered = $renderLayout($file, $vars);
-
-            $target = $baseDir.'/web/index.'.$format;
-            file_put_contents($target, $rendered);
-        }
-
-        if (is_dir($baseDir.'/assets')) {
-            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($baseDir.'/assets'), RecursiveIteratorIterator::CHILD_FIRST);
-            foreach ($files as $file) {
-                if ($file->isFile()) {
-                    $relativeFilename = substr($file, strlen($baseDir.'/assets/'));
-                    $fs->copy($file, $baseDir.'/web/'.$relativeFilename);
-                }
-            }
-        }
-    })
-;
-$console->run();
+$program = Lisphp_Program::load($filename);
+$program->execute($scope);

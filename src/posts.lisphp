@@ -1,0 +1,28 @@
+(use iterator-to-array)
+(use strcmp array-slice array-reverse array-combine)
+(use balrog-sort)
+
+(define (list-posts)
+    (map parse-post-file (list-post-files)))
+
+(define (get-latest-post posts)
+    (let ([posts (sort-posts posts)])
+        (at (array-slice posts 0 1) 0)))
+
+(define (sort-posts posts)
+    (let ([posts (iterator-to-array posts)])
+        (balrog-sort posts (lambda (a b)
+            (strcmp (at a "date_string")
+                    (at b "date_string"))))
+        (array-reverse posts)))
+
+(define (post-is-visible? post)
+    (not (and (exists-at? post "hidden") (at post "hidden"))))
+
+(define (filter-hidden-posts posts)
+    (filter post-is-visible? posts))
+
+(define (get-layout-parts file)
+    (array-combine
+        (array "_" "format" "engine")
+        (explode "." (basename file))))

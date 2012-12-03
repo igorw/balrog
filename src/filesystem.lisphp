@@ -1,0 +1,38 @@
+(from Symfony\Component\Filesystem (<Filesystem>))
+(use <FilesystemIterator> <RecursiveIteratorIterator> <RecursiveDirectoryIterator>)
+(use file-put-contents dirname file-exists mkdir glob is-file copy)
+(use strlen)
+
+(define (list-asset-files)
+    (filter is-file
+            (<RecursiveIteratorIterator>
+                (<RecursiveDirectoryIterator> (. base-dir "/assets")))))
+
+(define (list-index-layout-files)
+    (glob (. base-dir "/layouts/index.*.twig")))
+
+(define (list-post-files)
+    (<FilesystemIterator> (. base-dir "/posts")))
+
+(define (clean-web)
+    (define fs (<Filesystem>))
+    ((-> fs remove) (. base-dir "/web")))
+
+(define (write-web-file file contents)
+    (define target-file (. base-dir "/web/" file))
+    (ensure-dir-exists (dirname target-file))
+    (file-put-contents target-file contents))
+
+(define (ensure-dir-exists dir)
+    (if (not (file-exists dir))
+        (mkdir dir 0777 true)))
+
+(define (copy-assets)
+    (map copy-asset (list-asset-files)))
+
+(define (copy-asset file)
+    (define relative-file (substring file (strlen (. base-dir "/assets/"))))
+    (define target-file (. base-dir "/web/" relative-file))
+    (ensure-dir-exists (dirname target-file))
+    (copy file target-file)
+    (string file))
