@@ -11,7 +11,7 @@
     ],
     "require": {
         "dflydev/markdown": "1.0.*",
-        "lisphp/lisphp": "1.0.*@dev",
+        "lisphp/lisphp": "1.1.*@dev",
         "symfony/filesystem": "2.1.*",
         "symfony/yaml": "2.1.*",
         "twig/twig": "1.9.*"
