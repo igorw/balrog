@@ -1,6 +1,6 @@
 # Balrog
 
-The tiny static site generator.
+The tiny static site generator written in lisphp.
 
 ## Usage
 
@@ -57,16 +57,11 @@ Now you can add the following directories:
 
   Other fields can be defined at will and used in the template.
 
-  Any instance of `$relativeRoot` will be replaced with the relative root, so
-  you can reference an image like this:
-
-        ![Amazing shark with lasers]($relativeRoot/shark.png)
-
 In order to build the site, you can use the `balrog build` command:
 
     $ vendor/bin/balrog build
 
-This will populate the `web` directory with a set of files that can be
+This will populate the `static` directory with a set of files that can be
 deployed onto any static web server.
 
 ## Quote of the day
