@@ -21,7 +21,7 @@ function balrog_sort($array, $comparator)
     return $array;
 }
 
-function balrog_front_controller()
+function balrog_front_controller($baseDir)
 {
     $environment = Lisphp_Environment::full();
     $scope = new Lisphp_Scope($environment);
@@ -30,7 +30,7 @@ function balrog_front_controller()
         $program = Lisphp_Program::load(__DIR__.'/'.$file.'.lisphp');
         return $program->execute($scope);
     });
-    $scope['base-dir'] = __DIR__.'/..';
+    $scope['base-dir'] = $baseDir;
 
     $filename = __DIR__.'/front-controller.lisphp';
     $program = Lisphp_Program::load($filename);
