@@ -1,21 +1,14 @@
-#!/usr/bin/env php
-<?php
+#!/bin/bash
+# Amazing static site generator
+# Works for PHP and HTML sites
+# Assumes web root to be in /web
 
-if ((!@include __DIR__.'/../../../autoload.php') && (!@include __DIR__.'/../vendor/autoload.php')) {
-    die('You must set up the project dependencies, run the following commands:'.PHP_EOL.
-        'curl -s https://getcomposer.org/installer | php'.PHP_EOL.
-        'php composer.phar install'.PHP_EOL);
-}
+PORT=9999
+TARGET=static
 
-$filename = __DIR__.'/../src/balrog.lisphp';
-
-$environment = Lisphp_Environment::full();
-$scope = new Lisphp_Scope($environment);
-
-$scope['require'] = new Lisphp_Runtime_PHPFunction(function ($file) use ($scope) {
-    $program = Lisphp_Program::load(__DIR__.'/../src/'.$file.'.lisphp');
-    return $program->execute($scope);
-});
-
-$program = Lisphp_Program::load($filename);
-$program->execute($scope);
+php -S localhost:$PORT -t web web/index.php >/dev/null &
+PID=$!
+sleep 0.1
+rm -rf $TARGET
+wget -r -l inf --no-remove-listing --adjust-extension -nH --no-use-server-timestamps -nc -nv -P $TARGET http://localhost:$PORT
+kill $PID

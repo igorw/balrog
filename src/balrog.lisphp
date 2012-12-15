@@ -1,47 +1,45 @@
-(use getcwd)
-(use var-dump)
+(use <Silex\Provider\TwigServiceProvider>)
 
-(define base-dir (getcwd))
-
+(require "web")
 (require "render")
 (require "parse")
 (require "filesystem")
 (require "posts")
 
-(define (build)
-    (clean-web)
-    (dict ("posts" (build-posts))
-          ("index" (build-index))
-          ("assets" (copy-assets))))
+(set-param "debug" true)
+(register (<Silex\Provider\TwigServiceProvider>)
+          (dict ("twig.path" (. base-dir "/layouts"))))
 
-(define (build-posts)
-    (map build-post (list-post-files)))
+(get "/"
+    (lambda (request)
+        (build-index (get-request-format))))
 
-(define (build-post file)
+(get "/index.{_format}"
+    (lambda (request)
+        (build-index (get-request-format))))
+
+(get "/{year}/{month}/{day}/{name}.{_format}"
+    (lambda (request)
+        (build-post
+            (get-post-filename (get-attribute "year")
+                               (get-attribute "month")
+                               (get-attribute "day")
+                               (get-attribute "name"))
+            (get-request-format))))
+
+(define (build-post file format)
     (let ([post (parse-post-file file)])
-        (write-web-file
-            (at post "path")
-            (render-layout
-                (. (at post "layout") ".html.twig")
-                (dict ("post" post)
-                      ("relativeRoot" "../../..")))))
-    (string file))
+        (render-layout
+            (. (at post "layout") "." format ".twig")
+            (dict ("post" post)
+                  ("relativeRoot" "../../..")))))
 
-(define (build-index)
-    (let ([posts (list-posts)])
-        (map
-            (lambda (file)
-                (build-index-from-layout file posts))
-            (list-index-layout-files))))
+(define (build-index format)
+    (build-index-from-layout format (list-posts)))
 
-(define (build-index-from-layout file posts)
-    (define parts (get-layout-parts file))
-    (write-web-file
-        (. "index." (at parts "format"))
-        (render-layout (basename file)
-            (dict ("posts" (sort-posts (filter-hidden-posts posts)))
-                  ("relativeRoot" ".")
-                  ("latest" (get-latest-post posts)))))
-    (string file))
-
-(var-dump (build))
+(define (build-index-from-layout format posts)
+    (render-layout
+        (. "index." format ".twig")
+        (dict ("posts" (sort-posts (filter-hidden-posts posts)))
+              ("relativeRoot" ".")
+              ("latest" (get-latest-post posts)))))

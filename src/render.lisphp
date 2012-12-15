@@ -1,32 +1,11 @@
 (from dflydev\markdown (<MarkdownParser>))
-(use <Twig_Loader_Filesystem> <Twig_Environment>)
-(use explode array-combine)
-(use balrog-render-php)
 
 (define (render-post-body body)
     (define parser (<MarkdownParser>))
     ((-> parser transformMarkdown) body))
 
-(define (get-layout-name-parts file)
-    (array-combine
-        (array "layout" "format" "engine")
-        (explode "." file)))
-
 (define (render-layout file vars)
-    (define parts (get-layout-name-parts file))
-    (define engine (get-engine (at parts "engine")))
-    (engine file vars))
+    (render file vars))
 
-(define twig
-    (<Twig_Environment>
-        (<Twig_Loader_Filesystem> (. base-dir "/layouts"))
-        (dict ("strict_variables" true))))
-
-(define (get-engine name)
-    (define engines
-        (dict
-            ("twig" (lambda (file vars)
-                ((-> twig render) file vars)))
-            ("php" (lambda (file vars)
-                (balrog-render-php base-dir file vars)))))
-    (at engines name))
+(define (render file vars)
+    ((-> (get-service "twig") render) file vars))

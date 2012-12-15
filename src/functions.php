@@ -15,12 +15,6 @@ function balrog_split_raw_post($filename, $contents)
     ];
 }
 
-function balrog_render_php($baseDir, $filename, $vars)
-{
-    extract($vars);
-    return include $baseDir.'/layouts'.$filename;
-}
-
 function balrog_sort($array, $comparator)
 {
     usort($array, $comparator);
