@@ -1,0 +1,11 @@
+(from dflydev\markdown (<MarkdownParser>))
+
+(define (render-post-body body)
+    (define parser (<MarkdownParser>))
+    ((-> parser transformMarkdown) body))
+
+(define (render-layout file vars)
+    (render file vars))
+
+(define (render file vars)
+    ((-> (get-service "twig") render) file vars))

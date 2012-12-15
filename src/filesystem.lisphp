@@ -1,0 +1,12 @@
+(use <FilesystemIterator>)
+(use glob)
+(use implode)
+
+(define (list-index-layout-files)
+    (glob (. base-dir "/layouts/index.*.twig")))
+
+(define (list-post-files)
+    (<FilesystemIterator> (. base-dir "/posts")))
+
+(define (get-post-filename year month day name)
+    (. base-dir "/posts/" (implode "-" (array year month day name)) ".md"))

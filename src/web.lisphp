@@ -1,0 +1,22 @@
+(use <Silex\Application>)
+
+(define app (<Silex\Application>))
+
+(define register (-> app register))
+(define get-service (-> app offsetGet))
+(define set-param (-> app offsetSet))
+(define run (-> app run))
+
+(define (get-attribute name)
+    ((-> (get-request) attributes get) name))
+
+(define (get-request)
+    (get-service "request"))
+
+(define (get-request-format)
+    ((-> (get-request) getRequestFormat)))
+
+(define (get path controller)
+    ((-> app get)
+        path
+        (lambda () (controller (get-request)))))
