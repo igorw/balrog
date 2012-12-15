@@ -20,3 +20,19 @@ function balrog_sort($array, $comparator)
     usort($array, $comparator);
     return $array;
 }
+
+function balrog_front_controller()
+{
+    $environment = Lisphp_Environment::full();
+    $scope = new Lisphp_Scope($environment);
+
+    $scope['require'] = new Lisphp_Runtime_PHPFunction(function ($file) use ($scope) {
+        $program = Lisphp_Program::load(__DIR__.'/'.$file.'.lisphp');
+        return $program->execute($scope);
+    });
+    $scope['base-dir'] = __DIR__.'/..';
+
+    $filename = __DIR__.'/front-controller.lisphp';
+    $program = Lisphp_Program::load($filename);
+    $program->execute($scope);
+}
