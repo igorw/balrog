@@ -11,15 +11,15 @@
           (dict ("twig.path" (. base-dir "/layouts"))))
 
 (get "/"
-    (lambda (request)
+    (lambda [request]
         (build-index (get-request-format))))
 
 (get "/index.{_format}"
-    (lambda (request)
+    (lambda [request]
         (build-index (get-request-format))))
 
 (get "/{year}/{month}/{day}/{name}.{_format}"
-    (lambda (request)
+    (lambda [request]
         (build-post
             (get-post-filename (get-attribute "year")
                                (get-attribute "month")

@@ -10,7 +10,7 @@
 
 (define (sort-posts posts)
     (let ([posts (iterator-to-array posts)])
-        (balrog-sort posts (lambda (a b)
+        (balrog-sort posts (lambda [a b]
             (strcmp (at a "date_string")
                     (at b "date_string"))))
         (array-reverse posts)))

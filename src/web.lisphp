@@ -19,4 +19,4 @@
 (define (get path controller)
     ((-> app get)
         path
-        (lambda () (controller (get-request)))))
+        (lambda [] (controller (get-request)))))
