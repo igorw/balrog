@@ -1,13 +1,12 @@
 (use iterator-to-array)
-(use strcmp array-slice array-reverse array-combine)
+(use strcmp array-reverse array-combine)
 (use balrog-sort)
 
 (define (list-posts)
     (map parse-post-file (list-post-files)))
 
 (define (get-latest-post posts)
-    (let ([posts (sort-posts posts)])
-        (at (array-slice posts 0 1) 0)))
+    (at (sort-posts posts) 0))
 
 (define (sort-posts posts)
     (let ([posts (iterator-to-array posts)])
