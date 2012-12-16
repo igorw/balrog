@@ -12,34 +12,32 @@
 
 (get "/"
     (lambda [request]
-        (build-index (get-request-format))))
+        (render-index (get-request-format))))
 
 (get "/index.{_format}"
     (lambda [request]
-        (build-index (get-request-format))))
+        (render-index (get-request-format))))
 
 (get "/{year}/{month}/{day}/{name}.{_format}"
     (lambda [request]
-        (build-post
+        (render-post
             (get-post-filename (get-attribute "year")
                                (get-attribute "month")
                                (get-attribute "day")
                                (get-attribute "name"))
             (get-request-format))))
 
-(define (build-post file format)
+(define (render-post file format)
     (let ([post (parse-post-file file)])
         (render-layout
             (. (at post "layout") "." format ".twig")
             (dict ("post" post)
                   ("relativeRoot" "../../..")))))
 
-(define (build-index format)
-    (build-index-from-layout format (list-posts)))
-
-(define (build-index-from-layout format posts)
-    (render-layout
-        (. "index." format ".twig")
-        (dict ("posts" (sort-posts (filter-hidden-posts posts)))
-              ("relativeRoot" ".")
-              ("latest" (get-latest-post posts)))))
+(define (render-index format)
+    (let ([posts (sort-posts (filter-hidden-posts (list-posts)))])
+        (render-layout
+            (. "index." format ".twig")
+            (dict ("posts" posts)
+                  ("relativeRoot" ".")
+                  ("latest" (get-latest-post posts))))))

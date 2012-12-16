@@ -1,3 +1,4 @@
+(use <Traversable>)
 (use iterator-to-array)
 (use strcmp array-reverse array-combine)
 (use balrog-sort)
@@ -9,11 +10,16 @@
     (at (sort-posts posts) 0))
 
 (define (sort-posts posts)
-    (let ([posts (iterator-to-array posts)])
+    (let ([posts (strip-iterator posts)])
         (balrog-sort posts (lambda [a b]
             (strcmp (at a "date_string")
                     (at b "date_string"))))
         (array-reverse posts)))
+
+(define (strip-iterator iter-or-array)
+    (if (is-a? iter-or-array <Traversable>)
+        (iterator-to-array iter-or-array)
+        iter-or-array))
 
 (define (post-is-visible? post)
     (not (and (exists-at? post "hidden") (at post "hidden"))))
