@@ -15,5 +15,5 @@ mkdir $TARGET
 cp -r web/* $TARGET
 rm $TARGET/index.php
 
-wget -r -l inf --no-remove-listing --adjust-extension -nH --no-use-server-timestamps -nc -nv -P $TARGET http://localhost:$PORT
+wget -r -l inf --no-remove-listing --adjust-extension -nH --no-use-server-timestamps -nc -nv -k -P $TARGET http://localhost:$PORT
 kill $PID
