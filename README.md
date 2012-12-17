@@ -25,10 +25,6 @@ Now you can add the following directories:
 
   * **posts:** A listing of all posts in reverse order of publication.
 
-  * **relativeRoot:** The relative path from the current page to the root.
-    Useful for referencing assets. Must always be followed by a slash, e.g.:
-    `{{ relativeRoot }}/main.css`.
-
   Filenames that follow the `index.$format.twig` naming scheme will get compiled
   to an `index.$format` file.
 

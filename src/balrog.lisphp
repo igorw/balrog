@@ -31,13 +31,11 @@
     (let ([post (parse-post-file file)])
         (render-layout
             (. (at post "layout") "." format ".twig")
-            (dict ("post" post)
-                  ("relativeRoot" "../../..")))))
+            (dict ("post" post)))))
 
 (define (render-index format)
     (let ([posts (sort-posts (filter-hidden-posts (list-posts)))])
         (render-layout
             (. "index." format ".twig")
             (dict ("posts" posts)
-                  ("relativeRoot" ".")
                   ("latest" (get-latest-post posts))))))
