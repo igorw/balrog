@@ -1,10 +1,22 @@
 (use <Traversable>)
 (use iterator-to-array)
 (use strcmp array-reverse array-combine)
+(use array-unique in-array)
 (use balrog-sort)
 
 (define (list-posts)
     (map parse-post-file (list-post-files)))
+
+(define (list-posts-by-tag tag)
+    (filter (lambda [post] (has-tag? post tag)) (list-posts)))
+
+(define (has-tag? post tag)
+    (in-array tag (get-post-tags post)))
+
+(define (get-post-tags post)
+    (if (exists-at? post "tags")
+        (at post "tags")
+        (array)))
 
 (define (get-latest-post posts)
     (at (sort-posts posts) 0))

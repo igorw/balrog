@@ -24,7 +24,7 @@
 
 (define (get-post-path file)
     (define parts (get-post-name-parts file))
-    (sprintf "%s/%s/%s/%s.html"
+    (sprintf "/%s/%s/%s/%s.html"
         (at parts "year")
         (at parts "month")
         (at parts "day")

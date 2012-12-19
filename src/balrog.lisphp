@@ -12,11 +12,15 @@
 
 (get "/"
     (lambda [request]
-        (render-index (get-request-format))))
+        (render-index-all (get-request-format))))
 
 (get "/index.{_format}"
     (lambda [request]
-        (render-index (get-request-format))))
+        (render-index-all (get-request-format))))
+
+(get "/tags/{tag}.{_format}"
+    (lambda [request]
+        (render-index-tag (get-attribute "tag") (get-request-format))))
 
 (get "/{year}/{month}/{day}/{name}.{_format}"
     (lambda [request]
@@ -33,8 +37,14 @@
             (. (at post "layout") "." format ".twig")
             (dict ("post" post)))))
 
-(define (render-index format)
-    (let ([posts (sort-posts (filter-hidden-posts (list-posts)))])
+(define (render-index-all format)
+    (render-index (list-posts) format))
+
+(define (render-index-tag tag format)
+    (render-index (list-posts-by-tag tag) format))
+
+(define (render-index posts format)
+    (let ([posts (sort-posts (filter-hidden-posts posts))])
         (render-layout
             (. "index." format ".twig")
             (dict ("posts" posts)
