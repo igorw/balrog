@@ -16,4 +16,7 @@ cp -r web/* $TARGET
 rm $TARGET/index.php
 
 wget -r -l inf --no-remove-listing --adjust-extension -nH --no-use-server-timestamps -nc -nv -k -P $TARGET http://localhost:$PORT
+# replace ../../../index.html with ../../..; uses perl because sed on osx is shite
+# somebody please fix this
+perl -e "s/\.\.\/\.\.\/\.\.\/index\.html/..\/..\/../g;" -pi $(find static -type f)
 kill $PID
