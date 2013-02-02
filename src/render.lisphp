@@ -1,8 +1,8 @@
-(from dflydev\markdown (<MarkdownParser>))
+(from Michelf (<MarkdownExtra>))
 
 (define (render-post-body body)
-    (define parser (<MarkdownParser>))
-    ((-> parser transformMarkdown) body))
+    (define parser (<MarkdownExtra>))
+    ((-> parser transform) body))
 
 (define (render-layout file vars)
     (render file vars))
